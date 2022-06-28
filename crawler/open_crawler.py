@@ -5,8 +5,6 @@ sys.path.append('/home/cho/airflow/dags/alarm-bot/load')
 import load_to_sqlite3 as sq
 import re
 
-
-
 # OPEN PR 정보 수집
 def open_crawler():
     url = "https://github.com/fubabaz/algorithm/pulls"
@@ -27,32 +25,24 @@ def open_crawler():
         pr = data.find_all(class_ = "d-flex Box-row--drag-hide position-relative")
 
         for idx,i in enumerate(pr):
-            # pr_list.append([])
+            
 
             # pr 번호
             pr_num = i.find(class_="opened-by")
             re_pr_num = re.sub(r"[^0-9]","",pr_num.get_text().split('\n')[1].replace(" ",""))
-            # pr_list[idx].append(int(re_pr_num))
             pr_list.append(int(re_pr_num))
 
             # pr 담당자
             pr_assignee = i.find(class_="Link--muted").text
-            # pr_list[idx].append(pr_assignee)
             pr_list.append(pr_assignee)
             
             # pr 제목
             pr_title = i.find(class_="Link--primary v-align-middle no-underline h4 js-navigation-open markdown-title").text
-            # pr_list[idx].append(pr_title)
             pr_list.append(pr_title)
 
-
             # pr 상태
-            # pr_list[idx].append('open')
             pr_list.append('open')
 
-        
-            # dict 변환
-            # pr_dict[int(re_pr_num)] = pr_assignee
     else:
         print("OPEN_PR 정보가 없습니다.")
 
@@ -61,10 +51,7 @@ def open_crawler():
 
 
 
-
-
 if __name__ == "__main__":
-    # sq.info_delete('PR_INFO')
     open_crawler()
 
     

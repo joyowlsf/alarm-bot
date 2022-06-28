@@ -5,16 +5,16 @@ sys.path.append('/home/cho/airflow/dags/alarm-bot/crawler')
 import open_crawler as op
 import re
 import numpy as np
+# sys.path.append('/home/cho/airflow/dags/alarm-bot/user/')]
+# import user as ur
 
 
-# 
+
 def check():
 
     # DB에 OPEN PR이 존재하면 1 없으면 0을 반환
     db_open_cnt = sq.info_search("SELECT EXISTS(SELECT 1 FROM PR_INFO WHERE STATUS='open')").fetchone()
     re_db_open_cnt = re.sub(r"[^0-9]","",str(db_open_cnt))
-    
-    # sq.open_info_search2("select * from PR_INFO")
     
     # open_crawler 데이터
     pr_list = op.open_crawler()
@@ -66,5 +66,11 @@ def check():
             sq.info_update("UPDATE PR_INFO SET STATUS = 'close' WHERE SEQ={0}".format(re_d_seq))
 
 
-check()
+if __name__ == "__main__":
+    check()
+
+
+
+
+
 
