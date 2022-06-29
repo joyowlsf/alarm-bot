@@ -7,9 +7,13 @@ sys.path.append('/home/cho/airflow/dags/alarm-bot/user')
 import user as ur
 import re
 import numpy as np
+from slack_sdk import WebClient
+import datetime as dt
+
+client = WebClient(token=[slack_token])
 
 
-def user_data(user_name):
+def user_check(user_name):
     # 크롤링 데이터 수집
     user_data = op.open_crawler()
 
@@ -24,9 +28,10 @@ def user_data(user_name):
     # 전체 PR
     pr_total = int(re.sub(r"[^0-9]","",str(sq.info_search("SELECT COUNT(*) FROM PR_INFO WHERE STATUS ='close' AND ASSIGNEE='{0}'".format(user_name)).fetchall())))
 
-
+    # user 객체 생성
     user = ur.User()
 
+    
     if pr_current >= pr_goal:
         user.pr_assignee = user_name
         user.pr_current = pr_current
@@ -34,6 +39,8 @@ def user_data(user_name):
         user.pr_total = pr_total
         user.pass_yn = 'PASS'
         user.warning_cnt = 0
+        user.emojis = ":sonicdance_pbjtime:"
+        sq.info_update("UPDATE USER_INFO SET WARNING_CNT = 0 WHERE ASSIGNEE='{0}'".format(user.pr_assignee))
     else:
         user.pr_assignee = user_name
         user.pr_current = pr_current
@@ -41,6 +48,7 @@ def user_data(user_name):
         user.pr_total = pr_total
         user.pass_yn = 'FAIL'
         user.warning_cnt = 1
+        user.emojis = ":watching-you:"
         
     
     # user_tuple = (user_name,pr_current,pr_goal,pr_total,user.pass_yn,user.warning_cnt)
@@ -64,18 +72,27 @@ def user_data(user_name):
     # 최종 목표 PR
     user.pr_goal = pr_goal
 
-    # USER_INFO 조회
-    user.info()
+    # slack 메시지 전송
+    client.chat_postMessage(channel='#06_alarm',text=user.info())
+
     
+    # USER 데이터 저장
     # sq.user_info_insert(user_tuple)
 
+def slack_send():
+    date = dt.datetime.now()
 
-    
-if __name__ == "__main__":
-    user_data('Spidyweb-3588')
-    user_data('joyowlsf')
-    user_data('kyun-9458')
-    user_data('zeroradish')
+    client.chat_postMessage(channel='#06_alarm',text="""*ALGORITHM* - *{0}*  
+    :sonic: _PR 일정이 존재하는 주의 일요일 오전까지 팀원의 PR 리뷰를 진행해주세요. 리뷰가 완료되면 일요일 오후에 MERGE 진행하고 정리합니다._:sonic:"""
+    .format(date.strftime("%A")))
+    user_check('Spidyweb-3588')
+    user_check('joyowlsf')
+    user_check('kyun-9458')
+    user_check('zeroradish')
+
+
+
+
 
 
 

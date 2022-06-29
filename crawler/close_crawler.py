@@ -32,7 +32,7 @@ def close_crawler():
   
         
 
-        for idx,i in enumerate(pr):
+        for i in pr:
             
             # merge 된 pr 정보
             pr_check = i.find(class_="tooltipped tooltipped-e")

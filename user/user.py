@@ -8,6 +8,7 @@ class User:
         self.__pr_total = 0
         self.__pass_yn = None
         self.__warning_cnt = 0
+        self.__emojis = None
 
     # 담당자 
     @property
@@ -63,14 +64,24 @@ class User:
     @warning_cnt.setter
     def warning_cnt(self,warning_cnt):
         self.__warning_cnt=warning_cnt
+
+    # 이모지
+    @property
+    def emojis(self):
+        return self.__emojis
+
+    @emojis.setter
+    def emojis(self,emojis):
+        self.__emojis=emojis
     
 
     def info(self):
-        print("""담당자 : {0}
-현재 PR 수 : {1}/{2}
-MERGE PR 수 : {3}
-상태 : {4}""".format(self.__pr_assignee,self.__pr_current,self.__pr_goal,self.__pr_total,self.__pass_yn))
+        content = """>*{0}*
+>OPEN_PR   `{1}`/`{2}`
+>MERGE_PR  `{3}`
+>{4}{5}""".format(self.__pr_assignee,self.__pr_current,self.__pr_goal,self.__pr_total,self.__pass_yn,self.__emojis)
         
+        return content
 
 
 
