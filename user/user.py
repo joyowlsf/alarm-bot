@@ -9,6 +9,7 @@ class User:
         self.__pass_yn = None
         self.__warning_cnt = 0
         self.__emojis = None
+        self.__rank = None
 
     # 담당자 
     @property
@@ -37,7 +38,7 @@ class User:
     def pr_goal(self,pr_goal):
         self.__pr_goal=pr_goal
 
-    # 전체 PR 수
+    # MERGE PR 수
     @property
     def pr_total(self):
         return self.__pr_total
@@ -56,7 +57,7 @@ class User:
         self.__pass_yn=pass_yn
 
 
-    # 경고 수
+    # FAILD 수
     @property
     def warning_cnt(self):
         return self.__warning_cnt
@@ -67,19 +68,26 @@ class User:
 
     # 이모지
     @property
-    def emojis(self):
+    def emojis(self):       
         return self.__emojis
 
     @emojis.setter
     def emojis(self,emojis):
         self.__emojis=emojis
+
+    # 순위
+    @property
+    def rank(self):       
+        return self.__rank
+
+    @rank.setter
+    def rank(self,rank):
+        self.__rank=rank
     
 
     def info(self):
-        content = """>*{0}*
->OPEN_PR   `{1}`/`{2}`
->MERGE_PR  `{3}`
->{4}{5}""".format(self.__pr_assignee,self.__pr_current,self.__pr_goal,self.__pr_total,self.__pass_yn,self.__emojis)
+        content = """>*{0} {1} - TM PR `{2}` W PR `{3}` * {4}""".format(
+            self.__emojis,self.__pr_assignee,self.__pr_total,self.__pr_current,self.__rank)
         
         return content
 

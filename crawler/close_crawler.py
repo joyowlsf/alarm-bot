@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import sys
-sys.path.append('/home/cho/airflow/dags/alarm-bot/load')
+sys.path.append('/home/ubuntu/airflow/dags/alarm-bot/load')
 import load_to_sqlite3 as sq
 import numpy as np
 
@@ -59,6 +59,10 @@ def close_crawler():
             
                 
 if __name__ == "__main__":
+    # PR_INFO 삭제
+    sq.info_delete("delete from PR_INFO")
+    
+    # CLOSE PR 크롤링
     pr_list = close_crawler()
 
     # close_crawler 데이터 numpy
@@ -73,9 +77,9 @@ if __name__ == "__main__":
     # CLOSE PR 데이터 저장
     sq.pr_info_insert(pr_tuple)
 
-    print('CLOSE PR 정보 저장 완료')
+    # PR_INFO 조회
     print(sq.info_search("SELECT * FROM PR_INFO").fetchall())
-
+    
 
 
 

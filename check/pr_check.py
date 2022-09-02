@@ -1,7 +1,7 @@
 import sys
-sys.path.append('/home/cho/airflow/dags/alarm-bot/load')
+sys.path.append('/home/ubuntu/airflow/dags/alarm-bot/load')
 import load_to_sqlite3 as sq
-sys.path.append('/home/cho/airflow/dags/alarm-bot/crawler')
+sys.path.append('/home/ubuntu/airflow/dags/alarm-bot/crawler')
 import open_crawler as op
 import re
 import numpy as np

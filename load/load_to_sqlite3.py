@@ -1,5 +1,5 @@
 import sqlite3
-con = sqlite3.connect("git_info.db")
+con = sqlite3.connect("/home/ubuntu/git_info.db")
 
 # PR_INFO 테이블 생성
 # con.execute('CREATE TABLE PR_INFO(seq INTEGER PRIMARY KEY NOT NULL,assignee TEXT,title TEXT,status TEXT)')
@@ -19,13 +19,13 @@ def pr_info_insert(pr_tuple):
 # USER_INFO 테이블 정보 저장
 def user_info_insert(user_tuple):
     cur  = con.cursor()
-    cur.execute('INSERT INTO USER_INFO VALUES(?,?,?,?,?,?);', user_tuple)
+    cur.executemany('INSERT INTO USER_INFO VALUES(?,?,?,?,?,?);', user_tuple)
     con.commit()
 
 # 테이블 삭제
-def info_delete(query2):
+def info_delete(query):
     cur = con.cursor()
-    cur.execute(query2)
+    cur.execute(query)
     con.commit()
 
 # 테이블 조회

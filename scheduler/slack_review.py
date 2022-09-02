@@ -6,15 +6,14 @@ from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
 from airflow.utils.trigger_rule import TriggerRule
 import pendulum
-from datetime import datetime
 
 import sys
-sys.path.append("/home/cho/airflow/dags/alarm-bot/crawler")
+sys.path.append("/home/ubuntu/airflow/dags/alarm-bot/crawler")
 import open_crawler as op
-sys.path.append("/home/cho/airflow/dags/alarm-bot/check")
+sys.path.append("/home/ubuntu/airflow/dags/alarm-bot/check")
 import pr_check as pr
-import user_check as ur
-
+import user_check_old as ur
+import user_check_new as ch
 
 import requests
 from bs4 import BeautifulSoup
@@ -42,15 +41,13 @@ args = {
 
 local_tz = pendulum.timezone("Asia/Seoul")
 
+# 매주 월,화,수,목,금,토 09시 10분에 실행
 with DAG(
     dag_id="slack-etl",
     default_args = args,
-    schedule_interval="0 17 * * *",
+    schedule_interval="10 9 * * 1-6",
     start_date = datetime(2022,6,20, tzinfo=local_tz),
-    # schedule_interval="@once",
     catchup=False,
-    # dagrun_timeout=timedelta(minutes=5),
-    # start_date = days_ago(2),
 ) as dag:
 
     t1 = BranchPythonOperator(
@@ -71,16 +68,20 @@ with DAG(
         dag=dag)
     
     # PR 정보 DB 적재 및 slack 메시지 전송
+    # t4 = PythonOperator(
+    #     task_id='slack_send',
+    #     python_callable=ur.slack_send,
+    #     trigger_rule='none_failed_or_skipped',
+    #     dag=dag)
+
     t4 = PythonOperator(
         task_id='slack_send',
-        python_callable=ur.slack_send,
+        python_callable=ch.slack_send,
         trigger_rule='none_failed_or_skipped',
         dag=dag)
-
 
 
     dummy_1 = DummyOperator(task_id="No")
 
     t1 >> dummy_1 >> t4
     t1 >> t2 >> t3 >> t4
-    
