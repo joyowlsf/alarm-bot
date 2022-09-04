@@ -24,12 +24,6 @@ with DAG(
 ) as dag:
 
 
-    # # CLOSE_PR 데이터 수집
-    # t5 = PythonOperator(
-    #     task_id='open_crawler',
-    #     python_callable=cp.close_crawler,
-    #     dag=dag)
-
     # CLOSE_PR 데이터 수집
     t5 = BashOperator(
         task_id='close_crawler',

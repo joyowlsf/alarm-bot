@@ -41,11 +41,11 @@ args = {
 
 local_tz = pendulum.timezone("Asia/Seoul")
 
-# 매주 월,화,수,목,금,토 09시 10분에 실행
+# 매일 09시 10분에 실행
 with DAG(
     dag_id="slack-etl",
     default_args = args,
-    schedule_interval="10 9 * * 1-6",
+    schedule_interval="10 9 * * *",
     start_date = datetime(2022,6,20, tzinfo=local_tz),
     catchup=False,
 ) as dag:
@@ -68,12 +68,6 @@ with DAG(
         dag=dag)
     
     # PR 정보 DB 적재 및 slack 메시지 전송
-    # t4 = PythonOperator(
-    #     task_id='slack_send',
-    #     python_callable=ur.slack_send,
-    #     trigger_rule='none_failed_or_skipped',
-    #     dag=dag)
-
     t4 = PythonOperator(
         task_id='slack_send',
         python_callable=ch.slack_send,
